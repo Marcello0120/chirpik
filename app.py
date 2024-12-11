@@ -47,6 +47,21 @@ def make_transaction():
     
     return jsonify({'message': 'Transaction successful'}), 200
 
+@app.route("/grant_currency", methods=["POST"])
+def grant_currency():
+    data = request.json
+    username = data.get("username")
+    amount = data.get("amount")
+
+    if username not in users:
+        return jsonify({"error": "Username not found"}), 404
+
+    if amount <= 0:
+        return jsonify({"error": "Grant amount must be positive"}), 400
+
+    users[username]["balance"] += amount
+    return jsonify({"message": f"{amount} Budgies granted to {username}. New balance: {users[username]['balance']}"}), 200
+
 # Default route
 @app.route('/')
 def home():
